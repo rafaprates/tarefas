@@ -47,7 +47,7 @@ public class TarefaService {
     public Tarefa buscarPorId(long id) throws TarefaNaoEncontradaEncontradaException {
         return tarefaRepository
                 .findById(id)
-                .orElseThrow(TarefaNaoEncontradaEncontradaException::new);
+                .orElseThrow(() -> new TarefaNaoEncontradaEncontradaException(id));
     }
 
     @CacheEvict(value = "tarefas", allEntries = true)
@@ -63,9 +63,9 @@ public class TarefaService {
     public Tarefa atualizar(Principal solicitante, long tarefaId, NovaTarefaRequest novaTarefaRequest) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
-        if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor())) {
-            throw new PermissaoInsuficienteException("Você não tem permissão para atualizar essa tarefa");
-        }
+        if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor()))
+            throw new PermissaoInsuficienteException(solicitante.getName(), "Você não tem permissão para atualizar essa tarefa");
+
 
         tarefa.atualizar(novaTarefaRequest.getTitulo(), novaTarefaRequest.getDescricao());
 
@@ -76,9 +76,9 @@ public class TarefaService {
     public void deletar(Principal solicitante, long tarefaId) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
-        if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor())) {
-            throw new PermissaoInsuficienteException("Você não tem permissão para excluir essa tarefa");
-        }
+        if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor()))
+            throw new PermissaoInsuficienteException(solicitante.getName(), "Você não tem permissão para excluir essa tarefa");
+
 
         tarefaRepository.deleteById(tarefaId);
     }

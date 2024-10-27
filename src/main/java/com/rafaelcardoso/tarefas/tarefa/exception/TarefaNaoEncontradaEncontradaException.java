@@ -1,12 +1,14 @@
 package com.rafaelcardoso.tarefas.tarefa.exception;
 
+import lombok.Getter;
+
+@Getter
 public class TarefaNaoEncontradaEncontradaException extends RuntimeException {
 
-    public TarefaNaoEncontradaEncontradaException(String message) {
-        super(message);
-    }
+    private final long id;
 
-    public TarefaNaoEncontradaEncontradaException() {
-        super("Tarefa não encontrada");
+    public TarefaNaoEncontradaEncontradaException(long id) {
+        super(String.format("Tarefa %d não encontrada", id));
+        this.id = id;
     }
 }
