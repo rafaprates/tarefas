@@ -4,13 +4,14 @@ import com.rafaelcardoso.tarefas.auth.entidades.Usuario;
 import com.rafaelcardoso.tarefas.auth.service.UserService;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovaTarefaRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovoStatusRequest;
-import com.rafaelcardoso.tarefas.tarefa.entidades.Estado;
-import com.rafaelcardoso.tarefas.tarefa.entidades.Tarefa;
+import com.rafaelcardoso.tarefas.tarefa.entidade.Estado;
+import com.rafaelcardoso.tarefas.tarefa.entidade.Tarefa;
 import com.rafaelcardoso.tarefas.tarefa.exception.PermissaoInsuficienteException;
 import com.rafaelcardoso.tarefas.tarefa.exception.TarefaNaoEncontradaEncontradaException;
 import com.rafaelcardoso.tarefas.tarefa.repository.TarefaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,8 @@ public class TarefaService {
 
         tarefa.alterarEstado(novoStatusRequest.getEstado());
 
+        log.info("O status da Tarefa {} foi alterado para {} por {}", id, novoStatusRequest.getEstado(), MDC.get("usuario"));
+
         return tarefaRepository.save(tarefa);
     }
 
@@ -64,10 +67,11 @@ public class TarefaService {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
         if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor()))
-            throw new PermissaoInsuficienteException(solicitante.getName(), "Você não tem permissão para atualizar essa tarefa");
-
+            throw new PermissaoInsuficienteException(solicitante.getName(), tarefaId, "Você não tem permissão para atualizar essa tarefa");
 
         tarefa.atualizar(novaTarefaRequest.getTitulo(), novaTarefaRequest.getDescricao());
+
+        log.info("A tarefa {} foi atualizada por {}", tarefaId, MDC.get("usuario"));
 
         return tarefaRepository.save(tarefa);
     }
@@ -77,8 +81,9 @@ public class TarefaService {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
         if (!podeAtualizarOuExcluir(solicitante, tarefa.getCriadaPor()))
-            throw new PermissaoInsuficienteException(solicitante.getName(), "Você não tem permissão para excluir essa tarefa");
+            throw new PermissaoInsuficienteException(solicitante.getName(), tarefaId, "Você não tem permissão para excluir essa tarefa");
 
+        log.info("A tarefa {} foi deletada por {}", tarefaId, MDC.get("usuario"));
 
         tarefaRepository.deleteById(tarefaId);
     }

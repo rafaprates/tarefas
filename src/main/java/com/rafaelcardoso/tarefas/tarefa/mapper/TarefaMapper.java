@@ -1,7 +1,7 @@
 package com.rafaelcardoso.tarefas.tarefa.mapper;
 
 import com.rafaelcardoso.tarefas.tarefa.dto.TarefaResponse;
-import com.rafaelcardoso.tarefas.tarefa.entidades.Tarefa;
+import com.rafaelcardoso.tarefas.tarefa.entidade.Tarefa;
 import org.springframework.stereotype.Service;
 
 @Service

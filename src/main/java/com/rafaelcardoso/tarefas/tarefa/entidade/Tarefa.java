@@ -1,4 +1,4 @@
-package com.rafaelcardoso.tarefas.tarefa.entidades;
+package com.rafaelcardoso.tarefas.tarefa.entidade;
 
 import com.rafaelcardoso.tarefas.auth.entidades.Usuario;
 import lombok.Getter;

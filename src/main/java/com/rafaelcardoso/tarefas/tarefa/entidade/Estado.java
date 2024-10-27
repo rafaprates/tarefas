@@ -1,4 +1,4 @@
-package com.rafaelcardoso.tarefas.tarefa.entidades;
+package com.rafaelcardoso.tarefas.tarefa.entidade;
 
 public enum Estado {
     PENDENTE,

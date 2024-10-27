@@ -3,7 +3,7 @@ package com.rafaelcardoso.tarefas.tarefa.controller;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovaTarefaRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovoStatusRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.TarefaResponse;
-import com.rafaelcardoso.tarefas.tarefa.entidades.Estado;
+import com.rafaelcardoso.tarefas.tarefa.entidade.Estado;
 import com.rafaelcardoso.tarefas.tarefa.mapper.TarefaMapper;
 import com.rafaelcardoso.tarefas.tarefa.service.TarefaService;
 import io.swagger.annotations.Api;

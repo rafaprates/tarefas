@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import springfox.documentation.annotations.Cacheable;
 
 @Slf4j
 @Service
@@ -19,16 +20,18 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        log.info("Buscando usuário por email: {}", email);
+        log.info("Logando usuário {}", email);
         return usuarioRepository.findByEmail(email);
     }
 
+    @Cacheable("usuarios")
     public Usuario findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
     public void criar(String email, String senha) {
         Usuario u = new Usuario(email, passwordEncoder.encode(senha));
+        log.info("Usuário {} criado", email);
         usuarioRepository.save(u);
     }
 }
