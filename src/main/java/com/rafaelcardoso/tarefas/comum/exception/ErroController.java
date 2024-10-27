@@ -1,6 +1,7 @@
 package com.rafaelcardoso.tarefas.comum.exception;
 
 import com.rafaelcardoso.tarefas.comum.dto.ErroResponse;
+import com.rafaelcardoso.tarefas.tarefa.exception.PermissaoInsuficienteException;
 import com.rafaelcardoso.tarefas.tarefa.exception.TarefaNaoEncontradaEncontradaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,5 +14,10 @@ public class ErroController {
     @ExceptionHandler(TarefaNaoEncontradaEncontradaException.class)
     public ResponseEntity<ErroResponse> tarefaNaoEncontrada() {
         return new ResponseEntity<>(new ErroResponse("Tarefa não encontrada"), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PermissaoInsuficienteException.class)
+    public ResponseEntity<ErroResponse> permissaoInsuficiente(PermissaoInsuficienteException e) {
+        return new ResponseEntity<>(new ErroResponse(e.getMessage()), HttpStatus.FORBIDDEN);
     }
 }

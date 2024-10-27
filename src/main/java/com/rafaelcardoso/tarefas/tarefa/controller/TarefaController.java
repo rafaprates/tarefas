@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @Api(tags = "Tarefas")
 @RequestMapping("/v1/tarefas")
@@ -41,40 +43,44 @@ public class TarefaController {
         return new ResponseEntity<>(tarefas, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{tarefaId}")
     @ApiOperation(value = "Busca uma tarefa por Id")
-    public ResponseEntity<TarefaResponse> buscarPorId(@PathVariable long id) {
+    public ResponseEntity<TarefaResponse> buscarPorId(@PathVariable long tarefaId) {
         TarefaResponse tarefa = mapper.toResponse(
-                tarefaService.buscarPorId(id)
+                tarefaService.buscarPorId(tarefaId)
         );
 
         return new ResponseEntity<>(tarefa, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{tarefaId}/status")
     @ApiOperation(value = "Altera o status de uma tarefa")
-    public ResponseEntity<TarefaResponse> alterarStatus(@PathVariable long id, @RequestBody NovoStatusRequest status) {
+    public ResponseEntity<TarefaResponse> alterarStatus(@PathVariable long tarefaId, @RequestBody NovoStatusRequest status) {
         TarefaResponse tarefa = mapper.toResponse(
-                tarefaService.alterarStatus(id, status)
+                tarefaService.alterarStatus(tarefaId, status)
         );
 
         return new ResponseEntity<>(tarefa, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{tarefaId}")
     @ApiOperation(value = "Atualiza uma tarefa")
-    public ResponseEntity<TarefaResponse> atualizar(@PathVariable long id, @RequestBody NovaTarefaRequest novaTarefaRequest) {
+    public ResponseEntity<TarefaResponse> atualizar(
+            Principal solicitante,
+            @PathVariable long tarefaId,
+            @RequestBody NovaTarefaRequest novaTarefaRequest
+    ) {
         TarefaResponse tarefa = mapper.toResponse(
-                tarefaService.atualizar(id, novaTarefaRequest)
+                tarefaService.atualizar(solicitante, tarefaId, novaTarefaRequest)
         );
 
         return new ResponseEntity<>(tarefa, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{tarefaId}")
     @ApiOperation(value = "Deleta uma tarefa")
-    public ResponseEntity<Void> deletar(@PathVariable long id) {
-        tarefaService.deletar(id);
+    public ResponseEntity<Void> deletar(Principal solicitante, @PathVariable long tarefaId) {
+        tarefaService.deletar(solicitante, tarefaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
