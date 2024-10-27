@@ -4,6 +4,7 @@ import com.rafaelcardoso.tarefas.auth.entidades.Usuario;
 import com.rafaelcardoso.tarefas.auth.service.UserService;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovaTarefaRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovoStatusRequest;
+import com.rafaelcardoso.tarefas.tarefa.entidades.Estado;
 import com.rafaelcardoso.tarefas.tarefa.entidades.Tarefa;
 import com.rafaelcardoso.tarefas.tarefa.exception.PermissaoInsuficienteException;
 import com.rafaelcardoso.tarefas.tarefa.exception.TarefaNaoEncontradaEncontradaException;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,9 +34,11 @@ public class TarefaService {
         tarefaRepository.save(tarefa);
     }
 
-    public Page<Tarefa> buscarTodas(Pageable pageable) {
-        return tarefaRepository
-                .findAll(pageable);
+    public Page<Tarefa> buscarTodas(Optional<Estado> status, Pageable pageable) {
+        if (status.isPresent())
+            return tarefaRepository.findAllByEstado(status.get(), pageable);
+
+        return tarefaRepository.findAll(pageable);
     }
 
     public Tarefa buscarPorId(long id) throws TarefaNaoEncontradaEncontradaException {

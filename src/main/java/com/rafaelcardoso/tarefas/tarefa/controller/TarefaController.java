@@ -3,6 +3,7 @@ package com.rafaelcardoso.tarefas.tarefa.controller;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovaTarefaRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.NovoStatusRequest;
 import com.rafaelcardoso.tarefas.tarefa.dto.TarefaResponse;
+import com.rafaelcardoso.tarefas.tarefa.entidades.Estado;
 import com.rafaelcardoso.tarefas.tarefa.mapper.TarefaMapper;
 import com.rafaelcardoso.tarefas.tarefa.service.TarefaService;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @Api(tags = "Tarefas")
@@ -35,9 +37,10 @@ public class TarefaController {
 
     @GetMapping
     @ApiOperation(value = "Busca todas as tarefas de maneira paginada")
-    public ResponseEntity<Page<TarefaResponse>> buscarTodas(Pageable pageable) {
+    public ResponseEntity<Page<TarefaResponse>> buscarTodas(@RequestParam(required = false) Optional<Estado> status,
+                                                            Pageable pageable) {
         Page<TarefaResponse> tarefas = tarefaService
-                .buscarTodas(pageable)
+                .buscarTodas(status, pageable)
                 .map(mapper::toResponse);
 
         return new ResponseEntity<>(tarefas, HttpStatus.OK);
@@ -65,10 +68,9 @@ public class TarefaController {
 
     @PutMapping("/{tarefaId}")
     @ApiOperation(value = "Atualiza uma tarefa")
-    public ResponseEntity<TarefaResponse> atualizar(
-            Principal solicitante,
-            @PathVariable long tarefaId,
-            @RequestBody NovaTarefaRequest novaTarefaRequest
+    public ResponseEntity<TarefaResponse> atualizar(Principal solicitante,
+                                                    @PathVariable long tarefaId,
+                                                    @RequestBody NovaTarefaRequest novaTarefaRequest
     ) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.atualizar(solicitante, tarefaId, novaTarefaRequest)
