@@ -42,6 +42,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests(auth -> auth
                         .antMatchers("/auth/login").permitAll()
+                        .antMatchers("/swagger-ui/**").permitAll()
+                        .antMatchers("/swagger-resources/**").permitAll()
+                        .antMatchers("/v2/api-docs").permitAll()
                         .antMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
