@@ -58,7 +58,7 @@ public class TarefaController {
 
     @PatchMapping("/{tarefaId}/status")
     @ApiOperation(value = "Altera o status de uma tarefa")
-    public ResponseEntity<TarefaResponse> alterarStatus(@PathVariable long tarefaId, @RequestBody NovoStatusRequest status) {
+    public ResponseEntity<TarefaResponse> alterarStatus(Principal solcitante, @PathVariable long tarefaId, @RequestBody NovoStatusRequest status) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.alterarStatus(tarefaId, status)
         );
@@ -70,8 +70,7 @@ public class TarefaController {
     @ApiOperation(value = "Atualiza uma tarefa")
     public ResponseEntity<TarefaResponse> atualizar(Principal solicitante,
                                                     @PathVariable long tarefaId,
-                                                    @RequestBody NovaTarefaRequest novaTarefaRequest
-    ) {
+                                                    @RequestBody NovaTarefaRequest novaTarefaRequest) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.atualizar(solicitante, tarefaId, novaTarefaRequest)
         );

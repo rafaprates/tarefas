@@ -13,11 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import springfox.documentation.annotations.Cacheable;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -37,7 +38,6 @@ public class TarefaService {
         tarefaRepository.save(tarefa);
     }
 
-    @Cacheable("tarefas")
     public Page<Tarefa> buscarTodas(Optional<Estado> status, Pageable pageable) {
         if (status.isPresent())
             return tarefaRepository.findAllByEstado(status.get(), pageable);
@@ -45,13 +45,15 @@ public class TarefaService {
         return tarefaRepository.findAll(pageable);
     }
 
+    // Adiciona a tarefa ao cache para melhorar a performance da aplicação
+    @Cacheable(cacheNames = "tarefas", key = "#id")
     public Tarefa buscarPorId(long id) throws TarefaNaoEncontradaEncontradaException {
         return tarefaRepository
                 .findById(id)
                 .orElseThrow(() -> new TarefaNaoEncontradaEncontradaException(id));
     }
 
-    @CacheEvict(value = "tarefas", allEntries = true)
+    @CachePut(cacheNames = "tarefas", key = "#id") // Atualiza o cache da tarefa
     public Tarefa alterarStatus(long id, NovoStatusRequest novoStatusRequest) {
         Tarefa tarefa = this.buscarPorId(id);
 
@@ -62,7 +64,7 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
-    @CacheEvict(value = "tarefas", allEntries = true)
+    @CachePut(cacheNames = "tarefas", key = "#id") // Atualiza o cache da tarefa
     public Tarefa atualizar(Principal solicitante, long tarefaId, NovaTarefaRequest novaTarefaRequest) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
@@ -76,7 +78,7 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
-    @CacheEvict(value = "tarefas", allEntries = true)
+    @CacheEvict(cacheNames = "tarefas", key = "#id") // Remove o cache da tarefa com o id informado
     public void deletar(Principal solicitante, long tarefaId) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
