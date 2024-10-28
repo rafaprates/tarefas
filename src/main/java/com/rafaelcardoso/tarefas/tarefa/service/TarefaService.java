@@ -57,7 +57,7 @@ public class TarefaService {
 
         tarefa.alterarEstado(novoStatusRequest.getEstado());
 
-        log.info("O status da Tarefa {} foi alterado para {} por {}", id, novoStatusRequest.getEstado(), MDC.get("usuario"));
+        log.info("O status da tarefa {} foi alterado para {} por {}", id, novoStatusRequest.getEstado(), MDC.get("usuario"));
 
         return tarefaRepository.save(tarefa);
     }

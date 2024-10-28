@@ -29,9 +29,9 @@ public class UserService implements UserDetailsService {
         return usuarioRepository.findByEmail(email);
     }
 
-    public void criar(String email, String senha) {
+    public Usuario criar(String email, String senha) {
         Usuario u = new Usuario(email, passwordEncoder.encode(senha));
         log.info("Usuário {} criado", email);
-        usuarioRepository.save(u);
+        return usuarioRepository.save(u);
     }
 }
