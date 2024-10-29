@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class TarefaController {
 
     @PostMapping
     @ApiOperation(value = "Cria uma nova tarefa")
-    public ResponseEntity<Void> criar(Authentication auth, @RequestBody NovaTarefaRequest tarefa) {
+    public ResponseEntity<Void> criar(Authentication auth, @Valid @RequestBody NovaTarefaRequest tarefa) {
         tarefaService.criar(auth, tarefa);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

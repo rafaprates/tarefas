@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -23,7 +24,23 @@ public class ErroController {
 
     @ExceptionHandler(PermissaoInsuficienteException.class)
     public ResponseEntity<ErroResponse> permissaoInsuficiente(PermissaoInsuficienteException e) {
-        log.error("Usuário {} não tem permissão para alterar/deletar a tarefa {}", e.getUsername(), e.getRecursoId());
+        log.error("Usuário {} não tem permissão para alterar/deletar a tarefa {}. Erro: {}", e.getUsername(), e.getRecursoId(), e.getMessage());
         return new ResponseEntity<>(new ErroResponse(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErroResponse> validacao(MethodArgumentNotValidException e) {
+        String mensagem = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Ops.. ocorreu um erro de validação");
+        log.error("Erro de validação: {}", mensagem);
+        return new ResponseEntity<>(new ErroResponse(mensagem), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErroResponse> erroGenerico(Exception e) {
+        log.error("Erro inesperado", e);
+        return new ResponseEntity<>(new ErroResponse("Ops.. ocorreu um erro inesperado"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
