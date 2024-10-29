@@ -22,7 +22,7 @@ public class TarefasApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userService.criar("usuario001@ponta.com.br", "usuario001");
-        userService.criar("usuario002@ponta.com.br", "usuario002");
+        userService.criar("usuario001@email.com", "usuario001");
+        userService.criar("usuario002@email.com", "usuario002");
     }
 }
