@@ -64,7 +64,7 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
-    @CachePut(cacheNames = "tarefas", key = "#id") // Atualiza o cache da tarefa
+    @CachePut(cacheNames = "tarefas", key = "#tarefaId") // Atualiza o cache da tarefa
     public Tarefa atualizar(Principal solicitante, long tarefaId, NovaTarefaRequest novaTarefaRequest) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 
@@ -78,7 +78,7 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
-    @CacheEvict(cacheNames = "tarefas", key = "#id") // Remove o cache da tarefa com o id informado
+    @CacheEvict(cacheNames = "tarefas", key = "#tarefaId") // Remove o cache da tarefa com o id informado
     public void deletar(Principal solicitante, long tarefaId) {
         Tarefa tarefa = this.buscarPorId(tarefaId);
 

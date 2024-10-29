@@ -118,7 +118,7 @@ class TarefaServiceTest {
     }
 
     @Test
-    @DisplayName("Não deve atualizar tarefa quandoarefa ela não existe")
+    @DisplayName("Não deve atualizar tarefa quando a tarefa ela não existe")
     void naoDeveAtualizarTarefa_QuandoTarefaNaoExiste() {
         NovaTarefaRequest novaTarefaRequest = new NovaTarefaRequest("Novo Titulo", "Nova Descricao");
         Principal solicitante = mock(Principal.class);

@@ -57,7 +57,17 @@ class TarefaServiceIntegracaoTest {
     }
 
     @Test
-    @DisplayName("Deve buscar todas as tarefas filtrando por status")
+    @DisplayName("Deve paginar todas as tarefas quando o filtro não é informado")
+    void testBuscarTodasTarefasSemFiltragemDeStatus() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Tarefa> result = tarefaService.buscarTodas(Optional.empty(), pageable);
+
+        assertThat(result.getContent()).hasSize(4); // Deve retornar todas as tarefas
+    }
+
+    @Test
+    @DisplayName("Deve filtrar e paginar todas as tarefas quando o filtro é informado")
     void testBuscarTodasTarefasFiltrandoPorStatusConcluida() {
         Pageable pageable = PageRequest.of(0, 10);
         Optional<Estado> statusConcluida = Optional.of(Estado.CONCLUIDA);
@@ -66,15 +76,5 @@ class TarefaServiceIntegracaoTest {
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent()).allMatch(tarefa -> tarefa.getEstado() == Estado.CONCLUIDA);
-    }
-
-    @Test
-    @DisplayName("Deve buscar todas as tarefas sem filtro de status")
-    void testBuscarTodasTarefasSemFiltragemDeStatus() {
-        Pageable pageable = PageRequest.of(0, 10);
-
-        Page<Tarefa> result = tarefaService.buscarTodas(Optional.empty(), pageable);
-
-        assertThat(result.getContent()).hasSize(4); // Deve retornar todas as tarefas
     }
 }
