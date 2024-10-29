@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
-@Table(name = "tarefas")
 @Getter
 @Setter
+@NoArgsConstructor
+@Table(name = "tarefas")
 public class Tarefa {
 
     @Id
@@ -43,17 +43,9 @@ public class Tarefa {
         this.estado = Estado.PENDENTE;
     }
 
-    public void iniciar() {
-        this.estado = Estado.EM_ANDAMENTO;
-    }
-
     public void atualizar(String titulo, String descricao) {
         this.titulo = titulo;
         this.descricao = descricao;
-    }
-
-    public void concluir() {
-        this.estado = Estado.CONCLUIDA;
     }
 
     public void alterarEstado(Estado estado) {
