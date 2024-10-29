@@ -31,7 +31,8 @@ public class TarefaController {
 
     @PostMapping
     @ApiOperation(value = "Cria uma nova tarefa")
-    public ResponseEntity<TarefaResponse> criar(Authentication solicitante, @Valid @RequestBody NovaTarefaRequest tarefa) {
+    public ResponseEntity<TarefaResponse> criar(Authentication solicitante,
+                                                @Valid @RequestBody NovaTarefaRequest tarefa) {
         TarefaResponse criada = mapper.toResponse(
                 tarefaService.criar(solicitante, tarefa)
         );
@@ -41,7 +42,7 @@ public class TarefaController {
 
     @GetMapping
     @ApiOperation(value = "Busca todas as tarefas de maneira paginada")
-    public ResponseEntity<Page<TarefaResponse>> buscarTodas(@RequestParam(required = false) Optional<Estado> status,
+    public ResponseEntity<Page<TarefaResponse>> buscarTodas(@Valid @RequestParam(required = false) Optional<Estado> status,
                                                             Pageable pageable) {
         Page<TarefaResponse> tarefas = tarefaService
                 .buscarTodas(status, pageable)
@@ -63,7 +64,7 @@ public class TarefaController {
     @PatchMapping("/{tarefaId}/status")
     @ApiOperation(value = "Altera o status de uma tarefa")
     public ResponseEntity<TarefaResponse> alterarStatus(@PathVariable long tarefaId,
-                                                        @RequestBody NovoStatusRequest status) {
+                                                        @Valid @RequestBody NovoStatusRequest status) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.alterarStatus(tarefaId, status)
         );
@@ -75,7 +76,7 @@ public class TarefaController {
     @ApiOperation(value = "Atualiza uma tarefa")
     public ResponseEntity<TarefaResponse> atualizar(Principal solicitante,
                                                     @PathVariable long tarefaId,
-                                                    @RequestBody NovaTarefaRequest novaTarefaRequest) {
+                                                    @Valid @RequestBody NovaTarefaRequest novaTarefaRequest) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.atualizar(solicitante, tarefaId, novaTarefaRequest)
         );
