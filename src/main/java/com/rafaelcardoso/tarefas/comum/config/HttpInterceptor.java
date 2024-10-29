@@ -16,7 +16,10 @@ public class HttpInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("{} {} recebido", request.getMethod(), request.getRequestURI());
-        MDC.put("usuario", request.getUserPrincipal().getName());
+
+        if (request.getUserPrincipal() != null)
+            MDC.put("usuario", request.getUserPrincipal().getName());
+
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
