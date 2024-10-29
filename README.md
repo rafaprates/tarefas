@@ -167,3 +167,4 @@ possíveis problemas.
 - Atualizar para as versões estáveis do Spring e do Java já que a utilização de pacotes desatualizados pode expor a
   aplicação a vulnerabilidades conhecidas.
 - *Refresh tokens* para a possibilidade de invalidar os *tokens* emitidos.
+- Logs estruturados em formato JSON para melhor "buscabilidade".
