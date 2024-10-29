@@ -31,9 +31,12 @@ public class TarefaController {
 
     @PostMapping
     @ApiOperation(value = "Cria uma nova tarefa")
-    public ResponseEntity<Void> criar(Authentication auth, @Valid @RequestBody NovaTarefaRequest tarefa) {
-        tarefaService.criar(auth, tarefa);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<TarefaResponse> criar(Authentication solicitante, @Valid @RequestBody NovaTarefaRequest tarefa) {
+        TarefaResponse criada = mapper.toResponse(
+                tarefaService.criar(solicitante, tarefa)
+        );
+
+        return new ResponseEntity<>(criada, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -59,7 +62,8 @@ public class TarefaController {
 
     @PatchMapping("/{tarefaId}/status")
     @ApiOperation(value = "Altera o status de uma tarefa")
-    public ResponseEntity<TarefaResponse> alterarStatus(Principal solcitante, @PathVariable long tarefaId, @RequestBody NovoStatusRequest status) {
+    public ResponseEntity<TarefaResponse> alterarStatus(@PathVariable long tarefaId,
+                                                        @RequestBody NovoStatusRequest status) {
         TarefaResponse tarefa = mapper.toResponse(
                 tarefaService.alterarStatus(tarefaId, status)
         );

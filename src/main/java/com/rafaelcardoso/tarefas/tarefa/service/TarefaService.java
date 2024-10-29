@@ -31,11 +31,11 @@ public class TarefaService {
     private final TarefaRepository tarefaRepository;
     private final UserService userService;
 
-    public void criar(Authentication auth, NovaTarefaRequest novaTarefaRequest) {
+    public Tarefa criar(Authentication auth, NovaTarefaRequest novaTarefaRequest) {
         Usuario usuario = userService.findByEmail(auth.getName());
         Tarefa tarefa = new Tarefa(novaTarefaRequest.getTitulo(), novaTarefaRequest.getDescricao(), usuario);
 
-        tarefaRepository.save(tarefa);
+        return tarefaRepository.save(tarefa);
     }
 
     public Page<Tarefa> buscarTodas(Optional<Estado> status, Pageable pageable) {
