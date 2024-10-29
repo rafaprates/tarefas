@@ -63,15 +63,15 @@ A documentação completa poderá ser encontrada em `/swagger-ui/index.html`.
 
 Em resumo, para satisfazer os requisitos funcionais, foram desenvolvidos os seguintes *end-points*.
 
-| path                              | descrição                                                                      | status     |
-|-----------------------------------|--------------------------------------------------------------------------------|------------|
-| POST `/auth/login`                | Autentica usuário e gera um *token* para seu acesso                            | 200 ou 401 |
-| POST `/v1/tarefas`                | Cria uma tarefa                                                                | 201 ou 400 |
-| GET `/v1/tarefas?status={status}` | Pagina todas as tarefas. Opcionalmente, pode-se filtrar pelo status da tarefas | 200        |
-| GET `/v1/tarefas/{id}`            | Busca uma tarefa por id                                                        | 200 ou 404 |
-| PUT `/v1/tarefas/{id}`            | Atualiza uma tarefa                                                            | 200 ou 404 |
-| PATCH `/v1/tarefas/{id}/status`   | Altera o status de uma tarefa                                                  | 200 ou 404 |
-| DELETE `/v1/tarefas/{id}`         | Deleta uma tarefa                                                              | 204 ou 404 |
+| path                              | descrição                                                                      | status          |
+|-----------------------------------|--------------------------------------------------------------------------------|-----------------|
+| POST `/auth/login`                | Autentica usuário e gera um *token* para seu acesso                            | 200 ou 401      |
+| POST `/v1/tarefas`                | Cria uma tarefa                                                                | 201 ou 400      |
+| GET `/v1/tarefas?status={status}` | Pagina todas as tarefas. Opcionalmente, pode-se filtrar pelo status da tarefas | 200             |
+| GET `/v1/tarefas/{id}`            | Busca uma tarefa por id                                                        | 200 ou 404      |
+| PUT `/v1/tarefas/{id}`            | Atualiza uma tarefa                                                            | 200, 403 ou 404 |
+| PATCH `/v1/tarefas/{id}/status`   | Altera o status de uma tarefa                                                  | 200 ou 404      |
+| DELETE `/v1/tarefas/{id}`         | Deleta uma tarefa                                                              | 204, 403 ou 404 |
 
 ### Códigos de resposta
 
@@ -83,6 +83,7 @@ pelo solicitante. Abaixo estão os códigos e seus respectivos significados.
 - 204: Tarefa deletada (não há corpo)
 - 400: Requisição inválida (erro genérico)
 - 401: Não autorizado
+- 403: Proibido (o solicitante não tem permissão para modificar a tarefa)
 - 404: Tarefa não encontrada
 
 ### Manipulação de erros
