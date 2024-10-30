@@ -18,32 +18,36 @@ docker run -p 8080:8080 -t rp35/gerenciador-tarefas
 Esse comando executará a aplicação no modo *attach*. Dessa forma, será possível observar os logs da diretamente no
 terminal o qual executou a imagem.
 
-## Como testar a aplicação
+## Como se autenticar
 
-Para facilitar os testes, foram criados dois usuários diferentes e disponbilizada uma coleção do Postman com exemplos de
-requisições.
+Para facilitar os testes, foram pré-criados dois usuários diferentes na inicialização da aplicação.
 
-Não foi desenvolvido o gerenciamento de usuários porque o escopo da aplicação não previa essa funcionalidade.
+Não foi desenvolvida uma API para gerenciar esses usuários, pois isso está além do escopo inicial deste projeto.
 
-Nesse sentido, foram disponibilizados dois usuários que são cadastrados automaticamente ao subir a aplicação para fins
-de teste.
+Isso posto, os usuários pré-criados são:
 
 - Usuário 1
-    - E-mail: `usuario001@email.com.br`
+    - E-mail: `usuario001@email.com`
     - Senha: `usuario001`
 - Usuário 2
     - E-mail: `usuario002@email.com`
     - Senha: `usuario002`
 
+Para se autenticar, faça uma requisição do tipo `Basic Authentication` para `/auth/login` com as credenciais de um dos
+usuários acima. Se as credenciais estiverem corretas, a aplicação retornará um *token* JWT que deve ser enviado em todas
+as requisições subsequentes.
+
+## Como testar a aplicação
+
 Você pode utilizar a coleção do Postman disponível em `docs/gerenciador-tarefas.postman_collection.json` para testar as
-funcionalidades.
+funcionalidades. Nessa coleção, estão todos os *end-points* disponíveis e exemplos de requisição para cada um deles.
 
-Nessa coleção, estão todos os *end-points* disponíveis e exemplos de requisições para cada um deles. Alternativamente,
-você pode acessar a documentação da API em `/swagger-ui/index.html`.
+Alternativamente, você pode acessar a documentação da API em `/swagger-ui/index.html`.
 
-É importante ressaltar que para acessar os *end-points* é necessário fornecer um *token* de autenticação (Bearer Token).
-Para obtê-lo, basta fazer uma requisição do tipo Basic Authentication `/auth/login` com o e-mail e senha de um dos
-usuários informados acima.
+É importante ressaltar que para acessar os *end-points* é necessário fornecer um *token* de autenticação do tipo
+`Bearer Token`.
+
+Você poderá obtê-lo seguindo as instruções da seção [Como se autenticar](#como-se-autenticar).
 
 ## Banco e modelo de dados
 
@@ -63,15 +67,17 @@ A documentação completa poderá ser encontrada em `/swagger-ui/index.html`.
 
 Em resumo, para satisfazer os requisitos funcionais, foram desenvolvidos os seguintes *end-points*.
 
-| path                              | descrição                                                                      | status          |
-|-----------------------------------|--------------------------------------------------------------------------------|-----------------|
-| POST `/auth/login`                | Autentica usuário e gera um *token* para seu acesso                            | 200 ou 401      |
-| POST `/v1/tarefas`                | Cria uma tarefa                                                                | 201 ou 400      |
-| GET `/v1/tarefas?status={status}` | Pagina todas as tarefas. Opcionalmente, pode-se filtrar pelo status da tarefas | 200             |
-| GET `/v1/tarefas/{id}`            | Busca uma tarefa por id                                                        | 200 ou 404      |
-| PUT `/v1/tarefas/{id}`            | Atualiza uma tarefa                                                            | 200, 403 ou 404 |
-| PATCH `/v1/tarefas/{id}/status`   | Altera o status de uma tarefa                                                  | 200 ou 404      |
-| DELETE `/v1/tarefas/{id}`         | Deleta uma tarefa                                                              | 204, 403 ou 404 |
+| path                                             | descrição                                                                      | status               |
+|--------------------------------------------------|--------------------------------------------------------------------------------|----------------------|
+| POST `/auth/login`                               | Autentica usuário e gera um *token* para seu acesso                            | 200 ou 401           |
+| POST `/v1/tarefas`                               | Cria uma tarefa                                                                | 201, 400 ou 401      |
+| GET `/v1/tarefas?status={status}&page=0&size=5`* | Pagina todas as tarefas. Opcionalmente, pode-se filtrar pelo status da tarefas | 200 ou 401           |
+| GET `/v1/tarefas/{id}`                           | Busca uma tarefa por id                                                        | 200, 401 ou 404      |
+| PUT `/v1/tarefas/{id}`                           | Atualiza uma tarefa                                                            | 200, 401, 403 ou 404 |
+| PATCH `/v1/tarefas/{id}/status`                  | Altera o status de uma tarefa                                                  | 200, 401, ou 404     |
+| DELETE `/v1/tarefas/{id}`                        | Deleta uma tarefa                                                              | 204, 401, 403 ou 404 |
+
+\* O parâmetro `status` é opcional. Caso não seja informado, todas as tarefas serão retornadas.
 
 ### Códigos de resposta
 
@@ -81,10 +87,11 @@ pelo solicitante. Abaixo estão os códigos e seus respectivos significados.
 - 200: Requisição bem sucedida
 - 201: Tarefa criada
 - 204: Tarefa deletada (não há corpo)
-- 400: Requisição inválida (erro genérico)
+- 400: Requisição inválida (parâmetros inválidos). Os datalhes do erro são fornecidos na mensagem de resposta.
 - 401: Não autorizado
 - 403: Proibido (o solicitante não tem permissão para modificar a tarefa)
 - 404: Tarefa não encontrada
+- 500: Erro interno do servidor
 
 ### Manipulação de erros
 
@@ -98,7 +105,7 @@ As mensagens de erro seguem o seguinte formato.
 
 ```json
 {
-  "message": "mensagem de erro amigável ao solicitante"
+  "message": "O atributo 'titulo' é obrigatório"
 }
 ```
 
@@ -109,7 +116,7 @@ O *Swagger* foi utilizado para documentar a API. A documentação pode ser acess
 ## Testes automatizados
 
 Os testes foram desenvolvidos de maneira a expor os requisitos funcionais da aplicação. Eles têm o propósito não só de
-identificar possíveis falhas no código, mas de também manter uma documentação viva dele. Dessa meneira, novos
+identificar possíveis falhas no código, mas de também **manter uma documentação viva dele**. Dessa meneira, novos
 desenvolvedores poderão compreender as funcionalidades e seus comportamentos esperados mais facilmente ao rodar a
 bateria de testes.
 
@@ -138,19 +145,22 @@ funcionalidades.
 
 Foi utilizado Spring Security 5 para proteger a aplicação.
 
-A autenticação é feita inicialmente por meio da Basic Authentication.
+A autenticação é feita inicialmente pelo método `Basic Authentication`.
 
-Após autenticado, é emitido um *token* JWT que deve ser enviado em todas as requisições subsequentes.
+Após autenticado, é emitido um *token* JWT que deve ser enviado em todas as requisições subsequentes pelo método de
+autenticação `Bearer Token`.
 
 Os *tokens* JWT ajudam na escalabilidade da aplicação porque não é necessário manter o estado do usuário no servidor ou
-buscar a sessão do usuário a cada requisição.
+buscar a sessão do usuário no banco de dados a cada requisição.
 
 É também imperioso mencionar que as senhas dos usuários são *haseadas* antes de serem armazenadas no banco de dados.
 
 ## *Caching*
 
-Para fins de escabilidade, foi utilizado o Spring Cache para armazenar em memória as tarefas já acessadas. O *cache*
-evita a necessidade de acessar o banco de dados a cada requisição, o que pode ser custoso em termos de desempenho.
+Para fins de escabilidade e performance, foi utilizado o Spring Cache para armazenar em memória as tarefas já acessadas.
+
+O *cache* evita a necessidade de acessar o banco de dados a cada requisição, o que pode ser custoso em termos de
+desempenho.
 
 ## *Logging*
 
@@ -167,4 +177,6 @@ possíveis problemas.
 - Atualizar para as versões estáveis do Spring e do Java já que a utilização de pacotes desatualizados pode expor a
   aplicação a vulnerabilidades conhecidas.
 - *Refresh tokens* para a possibilidade de invalidar os *tokens* emitidos.
-- Logs estruturados em formato JSON para melhor "buscabilidade".
+- Logs estruturados em formato JSON para melhor "buscabilidade" (me faltou tempo para implementá-los).
+- Expor métricas para monitoramento da aplicação.
+- Expandir a bateria de testes para cobrir mais cenários.
