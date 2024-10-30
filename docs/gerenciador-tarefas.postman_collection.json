@@ -19,7 +19,7 @@
 						},
 						{
 							"key": "username",
-							"value": "usuario001@ponta.com.br",
+							"value": "usuario001@email.com",
 							"type": "string"
 						}
 					]
@@ -44,19 +44,12 @@
 			"name": "listarTodas",
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoidXN1YXJpbzAwMUBwb250YS5jb20uYnIiLCJleHAiOjE3MzAxNDUzMzMsImlhdCI6MTczMDA1ODkzMywic2NvcGUiOiIifQ.fhaxm2h3s3B2nBmo_GF7dXxWfj-Hh_4yVqQp32QoktZHgQT_PDhqumXnEoglv5m3dwx3drimuhwSSEow40E9O1I59TGc84xLb7Au8Gv3Ut2OrVAAzrwFiOdiiX5giGSSh6u9sx606m71s7q7ktCRA3Dk-SMtlSxcJixobQvxH7zQF7WC057qTrNa5qrxEYH10erkjYRfGEkRrHpcTuEU-W-EbRzrhqQADz-_gXINs-uuLp0nhFe8aYmV6h_TIZHcFCHcV3c3srbRdZgUBxGcqGn9OtUkqNf3QGEcxa3tA9Y6gHvu8Zz_9bu1Y-Kd1F1GVi3CJDpq3pi5cBWjVt8T8w",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/v1/tarefas?status=PENDENTE",
+					"raw": "localhost:8080/v1/tarefas?size=5&page=0",
 					"host": [
 						"localhost"
 					],
@@ -68,7 +61,16 @@
 					"query": [
 						{
 							"key": "status",
-							"value": "PENDENTE"
+							"value": "CONCLUIDA",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "5"
+						},
+						{
+							"key": "page",
+							"value": "0"
 						}
 					]
 				}
@@ -92,7 +94,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"titulo\": \"Tarefa 1\",\r\n    \"descricao\": \"Descrição...\"\r\n}",
+					"raw": "{\r\n    \"titulo\": \"Titulo\",\r\n    \"descricao\": \"Descrição\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -200,7 +202,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"titulo\": \"Atualizada....\",\r\n    \"descricao\": \"\"\r\n}",
+					"raw": "{\r\n    \"titulo\": \"Título atualizado\",\r\n    \"descricao\": \"\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -230,7 +232,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoidXN1YXJpbzAwMUBwb250YS5jb20uYnIiLCJleHAiOjE3MzAxNDUzMzMsImlhdCI6MTczMDA1ODkzMywic2NvcGUiOiIifQ.fhaxm2h3s3B2nBmo_GF7dXxWfj-Hh_4yVqQp32QoktZHgQT_PDhqumXnEoglv5m3dwx3drimuhwSSEow40E9O1I59TGc84xLb7Au8Gv3Ut2OrVAAzrwFiOdiiX5giGSSh6u9sx606m71s7q7ktCRA3Dk-SMtlSxcJixobQvxH7zQF7WC057qTrNa5qrxEYH10erkjYRfGEkRrHpcTuEU-W-EbRzrhqQADz-_gXINs-uuLp0nhFe8aYmV6h_TIZHcFCHcV3c3srbRdZgUBxGcqGn9OtUkqNf3QGEcxa3tA9Y6gHvu8Zz_9bu1Y-Kd1F1GVi3CJDpq3pi5cBWjVt8T8w",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -238,7 +240,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/v1/tarefas/2",
+					"raw": "localhost:8080/v1/tarefas/1",
 					"host": [
 						"localhost"
 					],
@@ -246,7 +248,7 @@
 					"path": [
 						"v1",
 						"tarefas",
-						"2"
+						"1"
 					]
 				}
 			},
